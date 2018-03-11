@@ -1,10 +1,10 @@
 var b_place,i_v1,i_v2,b_adde,b_edg,b_reset,b_nstep,b_pstep;
 var totnods,maxnods,totedg,maxedg,count,step;
 var bkcol='#d6a7d3',nodcol='#7a2d74';
-var canvascol='#e8d7e7',canvasx=20,canvasy=20,canvasw=900,canvash=600;
+var canvascol='#e8d7e7',canvasx=30,canvasy=30,canvasw=800,canvash=500;
 var mainarr,disparr,msg=[],msgflag,place;
 var bfsarr,queue,visited;
-var vhl,qhl,next,nexttot;
+var vhl,qhl,edghl,next,nexttot;
 
 msg[0]='';
 msg[1]='*INVALID INPUT';
@@ -15,26 +15,30 @@ msg[5]='*EDGE ADDED';
 msg[6]='*EDGE ALREADY EXISTS';
 
 function setup(){
-  createCanvas(window.innerWidth,window.innerHeight);
-
-  b_place=createButton('PLACE');
-  b_place.position(canvasx+canvasw+50,180)
-  b_place.mousePressed(nodesplaced);
-
-  b_edg=createButton('DONE');
-  b_edg.position(canvasx+canvasw+50,315)
-  b_edg.mousePressed(defedgs);
+  var mycv=createCanvas(window.innerWidth,window.innerHeight-80);
+  mycv.parent('sketch-holder');
 
   i_v1=createInput();
-  i_v1.position(canvasx+canvasw+50,285);
+  i_v1.position(canvasw+canvasx+canvasx,280);
   i_v2=createInput();
   i_v2.position(i_v1.x+i_v1.width,i_v1.y);
+
   b_adde=createButton('ADD EDGE');
   b_adde.position(i_v2.x+i_v2.width,i_v2.y);
   b_adde.mousePressed(addedge);
 
-  b_reset=createButton('RESET');
-  b_reset.position(canvasx+canvasw+50,canvasy+canvash+70);
+  b_edg=createButton('DONE');
+  b_edg.attribute('class','btn btn-outline-light');
+  b_edg.position(b_adde.x,b_adde.y+b_adde.height+20);
+  b_edg.mousePressed(defedgs);
+
+  b_place=createButton('PLACE');
+  b_place.attribute('class','btn btn-outline-light');
+  b_place.position(b_adde.x,100);
+  b_place.mousePressed(nodesplaced);
+
+  b_reset=createButton('CLEAR');
+  b_reset.position(canvasx+canvasw+50,canvasy+canvash+35);
   b_reset.mousePressed(reset);
 
   b_pstep=createButton('STEP BACK');
@@ -53,15 +57,25 @@ function draw(){
   noStroke();
   textAlign(LEFT,CENTER);
   fill(0);
-  text('CLICK MOUSE TO CREATE A NODE\nPRESS "PLACE" WHEN DONE',canvasw+canvasx+41,50);
-  text('ENTER EDGES: ',canvasw+canvasx+41,140);
-  text('NODE 1',canvasw+canvasx+41,165);
-  text('NODE 2',canvasw+canvasx+200,165);
-  text(msg[msgflag],canvasw+canvasx+40,280);
-  textSize(25);
-  text('QUEUE: '+qhl[step],canvasw+canvasx+41,500);
-  text('BFS: '+vhl[step],canvasw+canvasx+81,530);
-  textSize(18);
+  text('-\tCLICK MOUSE TO CREATE A NODE\n\tPRESS "PLACE" AFTER ALL NODES ARE ADDED ',canvasw+canvasx+canvasx,50);
+  text('-\tADD EDGES. PRESS "DONE" AFTER ALL EDGES ARE ADDED\n- 0 IS THE ROOT NODE\n- LOWER NODE NUMBER HAS HIGHER PRIORITY',canvasw+canvasx+canvasx,130);
+  text('NODE 1',canvasw+canvasx+canvasx,190);
+  text('NODE 2',canvasw+canvasx+canvasx+225,190);
+  fill(255);
+  text(msg[msgflag],canvasw+canvasx+canvasx,300);
+  fill(0);
+  
+  text('VISITED NODE: ',canvasw+canvasx+canvasx,360);
+  fill('#341835');
+  ellipse(canvasw+canvasx+210,360,40,40);
+  fill('#7a2d74');
+  ellipse(canvasw+canvasx+210,360,28,28);
+
+  fill(0);
+  text('QUEUE: '+qhl[step],canvasw+canvasx+canvasx,400);
+  if(vhl)
+  text('BFS: '+vhl[step],canvasw+88,430);
+  
   fill(canvascol);
   rect(canvasx,canvasy,canvasw,canvash,20);
 
@@ -69,11 +83,15 @@ function draw(){
     fill(nodcol);
     ellipse(mouseX,mouseY,50,50);
   }
-  stroke(128);
+  
   strokeWeight(4);
   for(var i=0;i<totnods;i++){
     for(var j=0;j<i+1;j++){
       if(mainarr[i][j]==1){
+        if((edghl[step][0]==j&&edghl[step][1]==i)||(edghl[step][0]==i&&edghl[step][1]==j))
+          stroke(255);
+        else
+          stroke(128);
         line(disparr[i][1],disparr[i][2],disparr[j][1],disparr[j][2]);
       }
     }
@@ -131,6 +149,7 @@ function mouseClicked(){
       totnods=maxnods;
       b_place.attribute('disabled','');
       b_edg.removeAttribute('disabled');
+      b_adde.removeAttribute('disabled');
       msgflag=3;//max node limit
     }
   }
@@ -178,32 +197,39 @@ function addedge(){
 function traverseBFS(){
   var i,k;
   queue.push(0);
-  qhl[next]=queue.slice();    
+  bfsarr.push(0);
+
+  qhl[next]=queue.slice();   
+  edghl[next]=edghl[next].slice(); 
   vhl[next++]=bfsarr.slice();
 
   while(queue.length!=0){
     i=queue.shift();
     visited[i]=true;
-    queue.unshift(i);
+    //queue.unshift(i);
 
     for(k=0;k<totnods;k++){
       if(i!=k&&mainarr[i][k]==1&&!visited[k]){
         queue.push(k);
+        bfsarr.push(k);
         visited[k]=true;
 
+        edghl[next]=[i,k];
         qhl[next]=queue.slice();
         vhl[next]=bfsarr.slice();
         next++;
       }
     }
-    var x=queue.shift();
-    bfsarr.push(i);
+    //var x=queue.shift();
+
     qhl[next]=queue.slice();
+    edghl[next]=edghl[next].slice(); 
     vhl[next++]=bfsarr.slice();
   }
 
   qhl[next]=queue.slice();
   vhl[next]=bfsarr.slice();
+  edghl[next]=edghl[next].slice(); 
 
   nexttot=next;
   next=0;
@@ -239,6 +265,7 @@ function reset(){
   nexttot=0;
   vhl=[];
   qhl=[];
+  edghl=[];
 
   for(var i=0;i<maxnods;i++){
     mainarr[i]=[];
@@ -258,6 +285,7 @@ function reset(){
   for(var i=0;i<100;i++){
     vhl[i]=[];
     qhl[i]=[];
+    edghl[i]=[];
   }
 
   b_place.removeAttribute('disabled');
