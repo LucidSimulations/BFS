@@ -6,27 +6,93 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>BREADTH FIRST SEARCH</title>
-    <script src="../_lib/p5.min.js"></script>
-    <script src="../_lib/addons/p5.dom.min.js"></script>
+    <script src="p5.min.js"></script>
+    <script src="p5.dom.min.js"></script>
     <script src="sketch.js"></script>
+    <style>
+    .row {
+      background-color: #e3e3e3;
+      border-radius: 15px;
+    }
+    .col-md-10 {
+      background-color: #f5f3f3;  
+    }
+    </style>
   </head>
 
-  <body>
-    <h1 align='CENTER'>BREADTH FIRST SEARCH</h1>
+  <body>    
+    <!--Nav bar-->
+    <nav class="navbar navbar-dark bg-dark">
+    <header class="navbar navbar-dark flex-column flex-md-row bd-navbar">
+    <div class="navbar-nav-scroll">
+    <ul class="navbar-nav bd-navbar-nav flex-row">
+    </ul>
+    <div class="navbar-nav-scroll">
+      <ul class="navbar-nav bd-navbar-nav flex-row">
+      <li class="nav-item">
+      <a class="nav-link" href="#"><img src="logo1.png"><font color="white">
+      &nbsp;&nbsp;&nbsp;LUCID SIMULATIONS&nbsp;&nbsp;&nbsp;</font></a>
+      </li>
+      </ul>
+    </div>
+    </div>
+    </header>
+    </nav>
+
     <div id="sketch-holder" ,class="container">
     </div>
+    <hr>
+    <div class="container">
+      <div class="row">
+        <div class="col-1"><p>
+        
+        </p>
+        </div>
+        <div class="col-10 "><br>
+        <h3 align="center">GRAPH TRAVERSALS</h3>
+        <p>
+          Breadth First Search(BFS) is a traversing algorithm where you should start traversing from a selected node (source or starting node) and traverse the graph layerwise thus exploring the neighbour nodes (nodes which are directly connected to source node). You must then move towards the next-level neighbour nodes.
+        </p>
+        <p>
+          As the name BFS suggests, you are required to traverse the graph breadthwise as follows:<br>
 
-  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-  <ol class="carousel-indicators">
-    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-  </ol>
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img class="d-block w-100" src="C:\Users\shivang\Documents\p5js projects\BFS\test1.jpg" alt="First slide">
+          1. First move horizontally and visit all the nodes of the current layer<br>
+          2. Move to the next layer<br><br>
+        </p>
+        <p align="center">
+          <img src="img1.jpg">
+        </p>
+        <p>
+          <br><h5>BFS Pseudocode</h5><br>
+          BFS (G, s)//Where G is the graph and s is the source node<br><br>
+          let Q be queue.<br>
+          Q.enqueue( s ) //Inserting s in queue until all its neighbour vertices are marked.<br>
+          mark s as visited.<br><br>
+          while ( Q is not empty)<br>
+          //Removing that vertex from queue,whose neighbour will be visited now<br>
+          v  =  Q.dequeue( )<br><br>
+          //processing all the neighbours of v  <br>
+          for all neighbours w of v in Graph G<br>
+          &nbsp;&nbsp;&nbsp;if w is not visited <br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Q.enqueue( w )             //Stores w in Q to further visit its neighbour<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mark w as visited.<br>
+        </p>
+        <p>
+          <h6>Simulation assumptions and constraints:-</h6>
+          <ul>
+            <li>Maximum of 10 nodes can be placed.</li>
+            <li>Naming of node is done in ascending order of the nodes placed.</li>
+            <li>0 is assumed to be the root node.</li>
+            <li>If nodes are not connected with 0, simulation will halt traversing only the root node.</li>
+          </ul>
+        </p>
+        <p align="right">Theory source : www.hackerearth.com</p>
+        </div>
+        <div class="col-1">
+        
+        </div>
+      </div>
+      <hr>
     </div>
-  </div>
-  </a>
-</div>
-
   </body>
 </html>

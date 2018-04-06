@@ -1,7 +1,8 @@
+//bkcol='#d6a7d3',nodcol='#7a2d74',canvascol='#e8d7e7';
 var b_place,i_v1,i_v2,b_adde,b_edg,b_reset,b_nstep,b_pstep;
 var totnods,maxnods,totedg,maxedg,count,step;
-var bkcol='#d6a7d3',nodcol='#7a2d74';
-var canvascol='#e8d7e7',canvasx=30,canvasy=30,canvasw=800,canvash=500;
+var bkcol='#b3d9ff',nodcol='#0080ff';
+var canvascol='#d2e4f7',canvasx=30,canvasy=70,canvasw=800,canvash=500;
 var mainarr,disparr,msg=[],msgflag,place;
 var bfsarr,queue,visited;
 var vhl,qhl,edghl,next,nexttot;
@@ -19,7 +20,7 @@ function setup(){
   mycv.parent('sketch-holder');
 
   i_v1=createInput();
-  i_v1.position(canvasw+canvasx+canvasx,280);
+  i_v1.position(canvasw+canvasx+canvasx,300+canvasy);
   i_v2=createInput();
   i_v2.position(i_v1.x+i_v1.width,i_v1.y);
 
@@ -28,17 +29,17 @@ function setup(){
   b_adde.mousePressed(addedge);
 
   b_edg=createButton('DONE');
-  b_edg.attribute('class','btn btn-outline-light');
+  b_edg.attribute('class','btn btn-light');
   b_edg.position(b_adde.x,b_adde.y+b_adde.height+20);
   b_edg.mousePressed(defedgs);
 
   b_place=createButton('PLACE');
-  b_place.attribute('class','btn btn-outline-light');
-  b_place.position(b_adde.x,100);
+  b_place.attribute('class','btn btn-light');
+  b_place.position(1400,120+canvasy);
   b_place.mousePressed(nodesplaced);
 
   b_reset=createButton('CLEAR');
-  b_reset.position(canvasx+canvasw+50,canvasy+canvash+35);
+  b_reset.position(canvasx+canvasw+50,canvasy+canvash+80);
   b_reset.mousePressed(reset);
 
   b_pstep=createButton('STEP BACK');
@@ -55,29 +56,37 @@ function setup(){
 function draw(){
   background(bkcol);
   noStroke();
-  textAlign(LEFT,CENTER);
   fill(0);
-  text('-\tCLICK MOUSE TO CREATE A NODE\n\tPRESS "PLACE" AFTER ALL NODES ARE ADDED ',canvasw+canvasx+canvasx,50);
-  text('-\tADD EDGES. PRESS "DONE" AFTER ALL EDGES ARE ADDED\n- 0 IS THE ROOT NODE\n- LOWER NODE NUMBER HAS HIGHER PRIORITY',canvasw+canvasx+canvasx,130);
-  text('NODE 1',canvasw+canvasx+canvasx,190);
-  text('NODE 2',canvasw+canvasx+canvasx+225,190);
+  textSize(35);
+  textStyle(BOLD);
+  textAlign(CENTER,CENTER);
+  text('BREADTH FIRST SEARCH',window.innerWidth/2,40);
+  
+  textSize(18);
+  textStyle(NORMAL);
+  textAlign(LEFT,CENTER);
+
+  text('-\tCLICK MOUSE TO CREATE A NODE\n\tPRESS "PLACE" AFTER ALL NODES ARE ADDED ',canvasw+canvasx+canvasx,50+canvasy);
+  text('-\tADD EDGES. PRESS "DONE" AFTER ALL EDGES ARE ADDED\n-\t0 IS THE ROOT NODE\n-\tLOWER NODE NUMBER HAS HIGHER PRIORITY',canvasw+canvasx+canvasx,130+canvasy);
+  text('NODE 1',canvasw+canvasx+canvasx,190+canvasy);
+  text('NODE 2',canvasw+canvasx+canvasx+225,190+canvasy);
   fill(255);
-  text(msg[msgflag],canvasw+canvasx+canvasx,300);
+  text(msg[msgflag],canvasw+canvasx+canvasx,300+canvasy);
   fill(0);
   
-  text('VISITED NODE: ',canvasw+canvasx+canvasx,360);
-  fill('#341835');
-  ellipse(canvasw+canvasx+210,360,40,40);
-  fill('#7a2d74');
-  ellipse(canvasw+canvasx+210,360,28,28);
+  text('VISITED NODE: ',canvasw+canvasx+canvasx,360+canvasy);
+  fill('#242144');
+  ellipse(canvasw+canvasx+210,360+canvasy,40,40);
+  fill(nodcol);
+  ellipse(canvasw+canvasx+210,360+canvasy,28,28);
 
   fill(0);
-  text('QUEUE: '+qhl[step],canvasw+canvasx+canvasx,400);
+  text('QUEUE: '+qhl[step],canvasw+canvasx+canvasx,400+canvasy);
   if(vhl)
-  text('BFS: '+vhl[step],canvasw+88,430);
+  text('BFS: '+vhl[step],canvasw+88,430+canvasy);
   
   fill(canvascol);
-  rect(canvasx,canvasy,canvasw,canvash,20);
+  rect(canvasx,canvasy+30,canvasw,canvash,20);
 
   if(placecondition()){
     fill(nodcol);
@@ -102,8 +111,8 @@ function draw(){
     if(disparr[i][0]!=undefined){
       for(var x=0;x<vhl[step].length;x++){
         if(i==vhl[step][x]){
-          fill('#341835');
-          ellipse(disparr[i][1],disparr[i][2],70,70);
+          fill('#242144');
+          ellipse(disparr[i][1],disparr[i][2],67,67);
         }
       }
       fill(nodcol);
@@ -117,7 +126,7 @@ function draw(){
 }
 
 function placecondition(){
-  if(place&&mouseX-30>=canvasx&&mouseX+30<=canvasx+canvasw&&mouseY-30>=canvasy&&mouseY+30<=canvasy+canvash)
+  if(place&&mouseX-30>=canvasx&&mouseX+30<=canvasx+canvasw&&mouseY-30>=canvasy+30&&mouseY<=canvasy+canvash)
     return true;
   else
     return false;
@@ -295,6 +304,9 @@ function reset(){
 
   i_v1.removeAttribute('disabled');
   i_v2.removeAttribute('disabled');
+
+  i_v1.value("");
+  i_v2.value("");
 
   textSize(18);
   textStyle(NORMAL);
