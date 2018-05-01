@@ -9,6 +9,7 @@
     <script src="p5.min.js"></script>
     <script src="p5.dom.min.js"></script>
     <script src="sketch.js"></script>
+    <link rel="shortcut icon" type="image/x-icon" href="logo1.ico">
     <style>
     .row {
       background-color: #e3e3e3;
@@ -78,11 +79,13 @@
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mark w as visited.<br>
         </p>
         <p>
-          <h6>Simulation assumptions and constraints:-</h6>
+          <h6>Simulation directions and assumptions:-</h6>
           <ul>
+            <li>Press mouse to place a node, click on 'PLACE NODES' after placing all nodes.</li>
+            <li>Add edges, press 'START' after placing all edges.</li>
             <li>Maximum of 10 nodes can be placed.</li>
             <li>Naming of node is done in ascending order of the nodes placed.</li>
-            <li>0 is assumed to be the root node.</li>
+            <li>0 is assumed to be the root node. Lower number has higher priority.</li>
             <li>If nodes are not connected with 0, simulation will halt traversing only the root node.</li>
           </ul>
         </p>
